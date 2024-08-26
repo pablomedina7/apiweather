@@ -1,10 +1,16 @@
+###########################
 import requests
-import sys
 import argparse
 import json
 import csv
+from dotenv import load_dotenv
+import os
 
-API_KEY = '42a2c636573464e6bff2055c028c2cf8'
+# Cargar variables de entorno desde .env
+load_dotenv()
+
+# Obtener API_KEY del archivo .env
+API_KEY = os.getenv('API_KEY')
 BASE_URL = "http://api.openweathermap.org/data/2.5/weather?"
 
 def get_weather(city, format_output):
@@ -50,3 +56,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     get_weather(args.city, args.format)
+#########################
