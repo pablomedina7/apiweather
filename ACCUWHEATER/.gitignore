@@ -1,2 +1,5 @@
-.env
+# Ignorar entorno virtual
 .venv/
+
+# Ignorar configuración de Visual Studio Code
+.vscode/
