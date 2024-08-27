@@ -1,4 +1,3 @@
-###########################
 import requests
 import argparse
 import json
@@ -11,7 +10,21 @@ load_dotenv()
 
 # Obtener API_KEY del archivo .env
 API_KEY = os.getenv('API_KEY')
-BASE_URL = "http://api.openweathermap.org/data/2.5/weather?"
+BASE_URL = os.getenv('BASE_URL')
+
+# Diccionario de traducciones
+weather_translations = {
+    "clear sky": "cielo despejado",
+    "few clouds": "pocas nubes",
+    "scattered clouds": "nubes dispersas",
+    "broken clouds": "nubes dispersas",
+    "shower rain": "lluvia ligera",
+    "rain": "lluvia",
+    "thunderstorm": "tormenta",
+    "snow": "nieve",
+    "mist": "niebla",
+    
+}
 
 def get_weather(city, format_output):
     try:
@@ -24,6 +37,10 @@ def get_weather(city, format_output):
             main = data['main']
             weather = data['weather'][0]
 
+            # Traducción de la descripción del clima
+            weather_description = weather['description'].lower()
+            translated_weather = weather_translations.get(weather_description, weather_description)
+
             if format_output == "json":
                 print(json.dumps(data, indent=4))
             elif format_output == "csv":
@@ -33,13 +50,13 @@ def get_weather(city, format_output):
                     writer.writeheader()
                     writer.writerow({
                         'Ciudad': city,
-                        'Clima': weather['description'].capitalize(),
+                        'Clima': translated_weather.capitalize(),
                         'Temperatura': f"{main['temp']}°C",
                         'Humedad': f"{main['humidity']}%"
                     })
                 print(f"Datos guardados en {city}_weather.csv")
             else:
-                print(f"Clima en {city}: {weather['description'].capitalize()}")
+                print(f"Clima en {city}: {translated_weather.capitalize()}")
                 print(f"Temperatura: {main['temp']}°C")
                 print(f"Humedad: {main['humidity']}%")
         elif response.status_code == 404:
@@ -56,4 +73,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     get_weather(args.city, args.format)
-#########################
